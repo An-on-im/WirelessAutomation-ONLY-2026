@@ -1,62 +1,76 @@
-﻿using CaiLib.Utils;
-using HarmonyLib;
-using static CaiLib.Utils.BuildingUtils;
-using static CaiLib.Utils.GameStrings;
-using static CaiLib.Utils.StringUtils;
+﻿using HarmonyLib;
+using KMod;
+using System.IO;
+using System.Reflection;
 
 namespace WirelessAutomation
 {
-	public static class WirelessAutomationPatches
-	{
+    public static class WirelessAutomationPatches
+    {
+        [HarmonyPatch(typeof(Game), "OnPrefabInit")]
+        public static class Game_OnPrefabInit_Patch
+        {
+            public static void Postfix(Game __instance)
+            {
+                WirelessAutomationManager.ResetEmittersList();
+                WirelessAutomationManager.ResetReceiversList();
+            }
+        }
 
-		[HarmonyPatch(typeof(Game))]
-		[HarmonyPatch("OnPrefabInit")]
-		public static class Game_OnPrefabInit_Patch
-		{
-			public static void Postfix(PauseScreen __instance)
-			{
-				WirelessAutomationManager.ResetEmittersList();
-				WirelessAutomationManager.ResetReceiversList();
-			}
-		}
+        [HarmonyPatch(typeof(Game), "OnLoadLevel")]
+        public static class Game_OnLoadLevel_Patch
+        {
+            public static void Postfix()
+            {
+                WirelessAutomationManager.ResetEmittersList();
+                WirelessAutomationManager.ResetReceiversList();
+            }
+        }
 
-		[HarmonyPatch(typeof(Game))]
-		[HarmonyPatch("OnLoadLevel")]
-		public static class Game_OnLoadLevel_Patch
-		{
-			public static void Postfix(PauseScreen __instance)
-			{
-				WirelessAutomationManager.ResetEmittersList();
-				WirelessAutomationManager.ResetReceiversList();
-			}
-		}
+        [HarmonyPatch(typeof(GeneratedBuildings), nameof(GeneratedBuildings.LoadGeneratedBuildings))]
+        public static class GeneratedBuildings_LoadGeneratedBuildings_Patch
+        {
+            public static void Prefix()
+            {
+                ModUtil.AddBuildingToPlanScreen(new HashedString("Automation"), WirelessSignalEmitterConfig.Id);
+                ModUtil.AddBuildingToPlanScreen(new HashedString("Automation"), WirelessSignalReceiverConfig.Id);
+            }
+        }
 
-		[HarmonyPatch(typeof(GeneratedBuildings))]
-		[HarmonyPatch(nameof(GeneratedBuildings.LoadGeneratedBuildings))]
-		public class GeneratedBuildings_LoadGeneratedBuildings_Patch
-		{
-			public static void Prefix()
-			{
-				AddBuildingStrings(WirelessSignalEmitterConfig.Id, WirelessSignalEmitterConfig.DisplayName, WirelessSignalEmitterConfig.Description, WirelessSignalEmitterConfig.Effect);
-				AddBuildingStrings(WirelessSignalReceiverConfig.Id, WirelessSignalReceiverConfig.DisplayName, WirelessSignalReceiverConfig.Description, WirelessSignalReceiverConfig.Effect);
+        [HarmonyPatch(typeof(Db), "Initialize")]
+        public static class Db_Initialize_Patch
+        {
+            public static void Postfix()
+            {
+                Db.Get().Techs.Get("DupeTrafficControl").unlockedItemIDs.Add(WirelessSignalEmitterConfig.Id);
+                Db.Get().Techs.Get("DupeTrafficControl").unlockedItemIDs.Add(WirelessSignalReceiverConfig.Id);
+            }
+        }
 
-				Strings.Add(WirelessAutomationManager.SliderTooltipKey, WirelessAutomationManager.SliderTooltip);
-				Strings.Add(WirelessAutomationManager.SliderTitleKey, WirelessAutomationManager.SliderTitle);
+        [HarmonyPatch(typeof(Localization), "Initialize")]
+        public static class Localization_Initialize_Patch
+        {
+            public static void Postfix()
+            {
+                Localization.RegisterForTranslation(typeof(STRINGS));
 
-				AddBuildingToPlanScreen(PlanMenuCategory.Automation, WirelessSignalEmitterConfig.Id);
-				AddBuildingToPlanScreen(PlanMenuCategory.Automation, WirelessSignalReceiverConfig.Id);
-			}
+                string modPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string translationsPath = Path.Combine(modPath, "translations");
+                string localeCode = Localization.GetLocale()?.Code;
 
-			[HarmonyPatch(typeof(Db))]
-			[HarmonyPatch("Initialize")]
-			public static class Db_Initialize_Patch
-			{
-				public static void Postfix()
-				{
-					AddBuildingToTechnology(GameStrings.Technology.Computers.Computing, WirelessSignalEmitterConfig.Id);
-					AddBuildingToTechnology(GameStrings.Technology.Computers.Computing, WirelessSignalReceiverConfig.Id);
-				}
-			}
-		}
-	}
+                if (!string.IsNullOrEmpty(localeCode))
+                {
+                    string poFile = Path.Combine(translationsPath, localeCode + ".po");
+                    if (File.Exists(poFile))
+                    {
+                        Localization.OverloadStrings(Localization.LoadStringsFile(poFile, false));
+                    }
+                }
+
+                LocString.CreateLocStringKeys(typeof(STRINGS), null);                
+                
+                Localization.GenerateStringsTemplate(typeof(STRINGS), Path.Combine(Manager.GetDirectory(), "strings_templates"));
+            }
+        }
+    }
 }

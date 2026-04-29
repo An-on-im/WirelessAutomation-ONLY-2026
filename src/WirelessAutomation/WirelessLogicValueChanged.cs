@@ -1,8 +1,8 @@
 ﻿namespace WirelessAutomation
 {
-	public struct WirelessLogicValueChanged
-	{
-		public int Channel;
-		public int Signal;
-	}
+    public struct WirelessLogicValueChanged
+    {
+        public int Channel;
+        public int Signal;
+    }
 }

@@ -1,124 +1,172 @@
-﻿using System.Collections.Generic;
+﻿using KSerialization;
+using System.Collections.Generic;
 using System.Linq;
-using KSerialization;
+using UnityEngine;
 
 namespace WirelessAutomation
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
-	public static class WirelessAutomationManager
-	{
-		public static int WirelessLogicEvent = (int)GameHashes.LogicEvent + 1;
+    [SerializationConfig(MemberSerialization.OptIn)]
+    public static class WirelessAutomationManager
+    {
+        public static int WirelessLogicEvent = Hash.SDBMLower("WirelessAutomation_WirelessLogicEvent");
+        public static int ChannelListChangedEvent = Hash.SDBMLower("WirelessAutomation_ChannelListChanged");
 
-		public static string SliderTooltipKey = "STRINGS.UI.UISIDESCREENS.WIRELESS_AUTOMATION_SIDE_SCREEN.TOOLTIP";
-		public static string SliderTooltip = "Select channel to tune in the device";
+        private static List<SignalEmitter> Emitters { get; } = new List<SignalEmitter>();
+        private static List<SignalReceiver> Receivers { get; } = new List<SignalReceiver>();
 
-		public static string SliderTitleKey = "STRINGS.UI.UISIDESCREENS.WIRELESS_AUTOMATION_SIDE_SCREEN.TITLE";
-		public static string SliderTitle = "Channel";
+        public static void ResetEmittersList()
+        {
+            Emitters.Clear();
+        }
 
-		private static List<SignalEmitter> Emitters { get; } = new List<SignalEmitter>();
-		private static List<SignalReceiver> Receivers { get; } = new List<SignalReceiver>();
+        public static void ResetReceiversList()
+        {
+            Receivers.Clear();
+        }
 
-		public static void ResetEmittersList()
-		{
-			Emitters.Clear();
-		}
+        public static int RegisterEmitter(SignalEmitter emitter)
+        {
+            var newId = 0;
+            if (Emitters.Count > 0)
+                newId = Emitters.Max(e => e.Id) + 1;
 
-		public static void ResetReceiversList()
-		{
-			Receivers.Clear();
-		}
+            emitter.Id = newId;
+            if (emitter.EmitChannel != 0 && Emitters.Any(e => e.EmitChannel == emitter.EmitChannel))
+                emitter.EmitChannel = 0;
 
-		public static int RegisterEmitter(SignalEmitter emitter)
-		{
-			var newId = 0;
-			if (Emitters.Count > 0)
-			{
-				newId = Emitters.Max(e => e.Id) + 1;
-			}
+            Emitters.Add(emitter);
+            TriggerChannelListChanged();
+            return emitter.Id;
+        }
 
-			emitter.Id = newId;
-			Emitters.Add(emitter);
+        public static int RegisterReceiver(SignalReceiver receiver)
+        {
+            var newId = 0;
+            if (Receivers.Count > 0)
+                newId = Receivers.Max(e => e.Id) + 1;
 
-			return emitter.Id;
-		}
+            receiver.Id = newId;
+            Receivers.Add(receiver);
+            TriggerChannelListChanged();
+            return receiver.Id;
+        }
 
-		public static int RegisterReceiver(SignalReceiver receiver)
-		{
-			var newId = 0;
-			if (Receivers.Count > 0)
-			{
-				newId = Receivers.Max(e => e.Id) + 1;
-			}
+        public static void UnregisterEmitter(int emitterId)
+        {
+            var emitter = Emitters.FirstOrDefault(e => e.Id == emitterId);
+            if (emitter != null)
+            {
+                if (emitter.EmitChannel != 0)
+                    NotifyReceivers(emitter.EmitChannel, 0);
 
-			receiver.Id = newId;
-			Receivers.Add(receiver);
+                Emitters.Remove(emitter);
+                TriggerChannelListChanged();
+            }
+        }
 
-			return receiver.Id;
-		}
+        public static void UnregisterReceiver(int id)
+        {
+            var receiver = Receivers.FirstOrDefault(e => e.Id == id);
+            if (receiver != null)
+            {
+                Receivers.Remove(receiver);
+                TriggerChannelListChanged();
+            }
+        }
 
-		public static void UnregisterEmitter(int emitterId)
-		{
-			var emitter = Emitters.FirstOrDefault(e => e.Id == emitterId);
-			Emitters.Remove(emitter);
-		}
+        public static void SetEmitterSignal(int emitterId, int signal)
+        {
+            var emitter = Emitters.FirstOrDefault(e => e.Id == emitterId);
+            if (emitter == null || emitter.EmitChannel == 0) return; // Канал 0 – не передаём
 
-		public static void UnregisterReceiver(int id)
-		{
-			var receiver = Receivers.FirstOrDefault(e => e.Id == id);
-			Receivers.Remove(receiver);
-		}
+            emitter.Signal = signal;
+            NotifyReceivers(emitter.EmitChannel, signal);
+        }
 
-		public static void SetEmitterSignal(int emitterId, int signal)
-		{
-			var emitter = Emitters.FirstOrDefault(e => e.Id == emitterId);
+        public static void ChangeEmitterChannel(int emitterId, int channel)
+        {
+            var emitter = Emitters.FirstOrDefault(e => e.Id == emitterId);
+            if (emitter == null) return;
 
-			if (emitter == null) return;
+            NotifyReceivers(emitter.EmitChannel, 0);
+            emitter.EmitChannel = channel;
 
-			emitter.Signal = signal;
-			NotifyReceivers(emitter.EmitChannel, signal);
-		}
+            if (channel != 0)
+                NotifyReceivers(channel, emitter.Signal);
 
-		public static void ChangeEmitterChannel(int emitterId, int channel)
-		{
-			var emitter = Emitters.FirstOrDefault(e => e.Id == emitterId);
+            TriggerChannelListChanged();
+        }
 
-			if (emitter == null) return;
+        public static void ChangeReceiverChannel(int receiverId, int channel)
+        {
+            var receiver = Receivers.FirstOrDefault(r => r.Id == receiverId);
+            if (receiver == null) return;
 
-			var othersOnChannel =
-				Emitters.Where(e => e.Id != emitterId && e.EmitChannel == emitter.EmitChannel).ToList();
+            if (channel != 0)
+            {
+                var emitterOnChannel = Emitters.FirstOrDefault(e => e.EmitChannel == channel);
+                int signal = emitterOnChannel?.Signal ?? 0;
+                var eventData = new WirelessLogicValueChanged { Channel = channel, Signal = signal };
+                receiver.GameObject?.Trigger(WirelessLogicEvent, (object)eventData);
+            }
+            TriggerChannelListChanged();
+        }
 
-			var leaveSignal = othersOnChannel.Any() ? othersOnChannel.First().Signal : 0;
-			NotifyReceivers(emitter.EmitChannel, leaveSignal);
+        private static void NotifyReceivers(int channel, int signal)
+        {
+            var eventData = new WirelessLogicValueChanged { Signal = signal, Channel = channel };
+            foreach (var receiver in Receivers)
+            {
+                if (receiver.Channel == channel)
+                    receiver.GameObject?.Trigger(WirelessLogicEvent, (object)eventData);
+            }
+        }
 
-			emitter.EmitChannel = channel;
-			NotifyReceivers(emitter.EmitChannel, emitter.Signal);
-		}
+        private static void TriggerChannelListChanged()
+        {
+            var objects = new HashSet<GameObject>();
+            foreach (var e in Emitters)
+                objects.Add(e.GameObject);
+            foreach (var r in Receivers)
+                objects.Add(r.GameObject);
 
-		public static void ChangeReceiverChannel(int receiverId, int channel)
-		{
-			var receiver = Receivers.FirstOrDefault(r => r.Id == receiverId);
+            foreach (var go in objects)
+                go?.Trigger(ChannelListChangedEvent, (object)null);
+        }
 
-			if (receiver == null) return;
+        public static bool IsChannelFreeForEmitter(int emitterId, int channel)
+        {
+            if (channel == 0) return true;
+            return !Emitters.Any(e => e.Id != emitterId && e.EmitChannel == channel);
+        }
 
-			var emittersOnChannel =
-				Emitters.Where(e => e.EmitChannel == channel).ToList();
+        public static int GetFirstFreeChannel()
+        {
+            for (int ch = 1; ch <= 100; ch++)
+                if (!Emitters.Any(e => e.EmitChannel == ch))
+                    return ch;
+            return 0;
+        }
 
-			var signal = emittersOnChannel.Any() ? emittersOnChannel.First().Signal : 0;
-			NotifyReceivers(channel, signal);
+        public static int GetLastOccupiedChannel()
+        {
+            var occupied = Emitters.Where(e => e.EmitChannel > 0).Select(e => e.EmitChannel).Distinct();
+            return occupied.Any() ? occupied.Max() : 0;
+        }
 
-			receiver.Channel = channel;
-		}
+        public static int GetEmitterSignalOnChannel(int channel)
+        {
+            return Emitters.FirstOrDefault(e => e.EmitChannel == channel)?.Signal ?? 0;
+        }
 
-		private static void NotifyReceivers(int channel, int signal)
-		{
-			foreach (var receiver in Receivers)
-			{
-				receiver.GameObject?.Trigger(WirelessLogicEvent, new WirelessLogicValueChanged
-				{
-					Signal = signal,
-					Channel = channel
-				});
-			}
-		}
-	}
+        public static bool HasEmitterOnChannel(int channel)
+        {
+            return Emitters.Any(e => e.EmitChannel == channel);
+        }
+
+        public static int GetReceiverCountOnChannel(int channel)
+        {
+            return Receivers.Count(r => r.Channel == channel);
+        }
+    }
 }
