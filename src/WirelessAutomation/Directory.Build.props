@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <GameDir></GameDir>
+    <ModName>WirelessAutomation</ModName>
+    <ModBuildDir>$(ModName)</ModBuildDir>
+    <ModAssetsDir>$(MSBuildProjectDirectory)\mod_assets\</ModAssetsDir>
+    <ModTitle>Wireless Automation</ModTitle>
+    <ModStaticID>WirelessAutomation</ModStaticID>
+    <ModDescription>Adds wireless signal emitter and receiver buildings.</ModDescription>
+    <ModSupportedContent>ALL</ModSupportedContent>
+    <ModMinimumBuild>469369</ModMinimumBuild>
+    <ModAPIVersion>2</ModAPIVersion>
+    <ModBuildDate>$([System.DateTime]::Now.ToString("yyyy.MM.dd"))</ModBuildDate>
+    <ModBuildTime>$([System.DateTime]::Now.ToString("HHmm"))</ModBuildTime>
+    <ModVersion>$(ModBuildDate).$(ModBuildTime)</ModVersion>
+  </PropertyGroup>
+</Project>

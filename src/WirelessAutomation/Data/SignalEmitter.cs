@@ -1,0 +1,19 @@
+﻿using UnityEngine;
+
+namespace WirelessAutomation
+{
+    public class SignalEmitter
+    {
+        public int Id { get; set; }
+        public int EmitChannel { get; set; }
+        public int Signal { get; set; }
+        public GameObject GameObject { get; set; }
+
+        public SignalEmitter(int emitChannel, int signal, GameObject go = null)
+        {
+            EmitChannel = emitChannel;
+            Signal = signal;
+            GameObject = go;
+        }
+    }
+}

@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<RootNamespace>WirelessAutomation</RootNamespace>
+		<AssemblyName>WirelessAutomation</AssemblyName>
+		<LangVersion>9</LangVersion>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>none</DebugType>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>$(ModBuildDate).$(ModBuildTime)</FileVersion>
+		<AssemblyInformationalVersion>$(ModBuildDate)-$(ModBuildTime)</AssemblyInformationalVersion>
+		<DefineConstants>NETSTANDARD;NETSTANDARD2_1;MERGEDOWN</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<Optimize>false</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="mscorlib" />
+		<Reference Include="netstandard" />
+		
+		<Reference Include="Assembly-CSharp" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\Assembly-CSharp.dll" Private="false" />
+		<Reference Include="Assembly-CSharp-firstpass" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\Assembly-CSharp-firstpass.dll" Private="false" />
+		<Reference Include="UnityEngine" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.dll" Private="false" />
+		<Reference Include="UnityEngine.CoreModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.CoreModule.dll" Private="false" />
+		<Reference Include="UnityEngine.TextRenderingModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.TextRenderingModule.dll" Private="false" />
+		<Reference Include="UnityEngine.UI" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.UI.dll" Private="false" />
+		<Reference Include="Unity.TextMeshPro" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\Unity.TextMeshPro.dll" Private="false" />
+		<Reference Include="Newtonsoft.Json" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\Newtonsoft.Json.dll" Private="false" />
+		<Reference Include="UnityEngine.TextCoreFontEngineModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.TextCoreFontEngineModule.dll" Private="false" />
+		<Reference Include="UnityEngine.UIModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.UIModule.dll" Private="false" />
+		<Reference Include="UnityEngine.UnityWebRequestModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.UnityWebRequestModule.dll" Private="false" />
+		<Reference Include="FMODUnity" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\FMODUnity.dll" Private="false" />
+		<Reference Include="UnityEngine.InputLegacyModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.InputLegacyModule.dll" Private="false" />
+		<Reference Include="UnityEngine.ImageConversionModule" HintPath="$(GameDir)\OxygenNotIncluded_Data\Managed\UnityEngine.ImageConversionModule.dll" Private="false" />
+	</ItemGroup>
+
+	<Target Name="DeployMod" AfterTargets="Build">
+		<MakeDir Directories="$(ModBuildDir)"/>
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModBuildDir)"/>
+		<ItemGroup>
+			<ModAssets Include="$(ModAssetsDir)**\*.*"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(ModAssets)" DestinationFolder="$(ModBuildDir)\%(RecursiveDir)" SkipUnchangedFiles="true"/>
+		<ItemGroup>
+			<ModYamlLines Include="title: $(ModTitle)"/>
+			<ModYamlLines Include="description: &quot;$(ModDescription)&quot;"/>
+			<ModYamlLines Include="staticID: $(ModStaticID)"/>
+		</ItemGroup>
+		<WriteLinesToFile File="$(ModBuildDir)\mod.yaml" Lines="@(ModYamlLines)" Overwrite="true" WriteOnlyWhenDifferent="true"/>
+		<ItemGroup>
+			<ModInfoLines Include="supportedContent: $(ModSupportedContent)"/>
+			<ModInfoLines Include="minimumSupportedBuild: $(ModMinimumBuild)"/>
+			<ModInfoLines Include="version: $(ModVersion)"/>
+			<ModInfoLines Include="APIVersion: $(ModAPIVersion)"/>
+		</ItemGroup>
+		<WriteLinesToFile File="$(ModBuildDir)\mod_info.yaml" Lines="@(ModInfoLines)" Overwrite="true" WriteOnlyWhenDifferent="true"/>
+		<Message Importance="high" Text="Mod deployed to $(ModBuildDir) (version $(ModVersion))"/>
+	</Target>
+</Project>

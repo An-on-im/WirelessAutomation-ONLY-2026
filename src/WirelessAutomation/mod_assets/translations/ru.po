@@ -1,0 +1,130 @@
+msgid ""
+msgstr ""
+"Application: Oxygen Not Included\n"
+"POT Version: 2.0\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: ru_RU\n"
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.DESC
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.DESC"
+msgid "Emitters allow automation signals to permeate space and solid rock, proving that wires are often just a state of mind."
+msgstr "Излучатели позволяют сигналам автоматики проходить сквозь пространство и твердую породу, доказывая, что провода — это лишь условность."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.EFFECT
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.EFFECT"
+msgid "Broadcasts an automation signal on a selected channel. Signals can be intercepted by any <link=\"WIRELESSSIGNALRECEIVER\">Wireless Receivers</link> tuned to the same frequency."
+msgstr "Транслирует сигнал автоматики на выбранном канале. Сигналы могут быть приняты любыми <link=\"WIRELESSSIGNALRECEIVER\">беспроводными приемниками</link>, настроенными на ту же частоту."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.NAME
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.NAME"
+msgid "<link=\"WIRELESSSIGNALEMITTER\">Wireless Signal Emitter</link>"
+msgstr "<link=\"WIRELESSSIGNALEMITTER\">Беспроводной излучатель</link>"
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.PORT_ACTIVE
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.PORT_ACTIVE"
+msgid "<b><style=\"logic_on\">Green Signal</style></b>: Broadcasts an <b><style=\"logic_on\">Active</style></b> signal on the current channel."
+msgstr "<b><style=\"logic_on\">Зеленый сигнал</style></b>: транслирует <b><style=\"logic_on\">активный</style></b> сигнал на текущем канале."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.PORT_INACTIVE
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALEMITTER.PORT_INACTIVE"
+msgid "<b><style=\"logic_off\">Red Signal</style></b>: Broadcasts a <b><style=\"logic_off\">Standby</style></b> signal on the current channel."
+msgstr "<b><style=\"logic_off\">Красный сигнал</style></b>: транслирует <b><style=\"logic_off\">неактивный</style></b> сигнал на текущем канале."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.DESC
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.DESC"
+msgid "Receivers pick up invisible automation waves, provided they aren't drowned out by the static of a nearby Duplicant's enthusiastic humming."
+msgstr "Приемники улавливают невидимые волны автоматики, если только те не заглушаются помехами от восторженного напевания ближайшего дубликанта."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.EFFECT
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.EFFECT"
+msgid "Outputs the automation signal received from a <link=\"WIRELESSSIGNALEMITTER\">Wireless Emitter</link> on the same channel."
+msgstr "Выводит сигнал автоматики, полученный от <link=\"WIRELESSSIGNALEMITTER\">беспроводного излучателя</link> на том же канале."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.NAME
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.NAME"
+msgid "<link=\"WIRELESSSIGNALRECEIVER\">Wireless Signal Receiver</link>"
+msgstr "<link=\"WIRELESSSIGNALRECEIVER\">Беспроводной приемник</link>"
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.PORT_ACTIVE
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.PORT_ACTIVE"
+msgid "<b><style=\"logic_on\">Green Signal</style></b>: An <b><style=\"logic_on\">Active</style></b> signal is detected on the selected channel."
+msgstr "<b><style=\"logic_on\">Зеленый сигнал</style></b>: на выбранном канале обнаружен <b><style=\"logic_on\">активный</style></b> сигнал."
+
+#. WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.PORT_INACTIVE
+msgctxt "WirelessAutomation.STRINGS.BUILDINGS.PREFABS.WIRELESSSIGNALRECEIVER.PORT_INACTIVE"
+msgid "<b><style=\"logic_off\">Red Signal</style></b>: No signal or a <b><style=\"logic_off\">Standby</style></b> signal is detected."
+msgstr "<b><style=\"logic_off\">Красный сигнал</style></b>: сигнал не обнаружен или <b><style=\"logic_off\">неактивен</style></b>."
+
+#. WirelessAutomation.STRINGS.SLIDER.DISABLED
+msgctxt "WirelessAutomation.STRINGS.SLIDER.DISABLED"
+msgid "Disabled"
+msgstr "Отключено"
+
+#. WirelessAutomation.STRINGS.SLIDER.EMITTER_CHANNEL
+msgctxt "WirelessAutomation.STRINGS.SLIDER.EMITTER_CHANNEL"
+msgid "Will broadcast received signal on channel {0}."
+msgstr "Трансляция на канале {0}."
+
+#. WirelessAutomation.STRINGS.SLIDER.RECEIVER_CHANNEL
+msgctxt "WirelessAutomation.STRINGS.SLIDER.RECEIVER_CHANNEL"
+msgid "Will listen to signal broadcast on channel {0}."
+msgstr "Прослушивание канала {0}."
+
+#. WirelessAutomation.STRINGS.SLIDER.TITLE
+msgctxt "WirelessAutomation.STRINGS.SLIDER.TITLE"
+msgid "Channel"
+msgstr "Канал связи"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_OCCUPIED.NAME
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_OCCUPIED.NAME"
+msgid "Channel occupied"
+msgstr "Канал занят"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_OCCUPIED.TOOLTIP
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_OCCUPIED.TOOLTIP"
+msgid "Another emitter is already using this channel."
+msgstr "Другой излучатель уже использует этот канал."
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_UNASSIGNED.NAME
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_UNASSIGNED.NAME"
+msgid "Channel unassigned"
+msgstr "Канал не назначен"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_UNASSIGNED.TOOLTIP
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.CHANNEL_UNASSIGNED.TOOLTIP"
+msgid "This device is not assigned to any channel and will not function."
+msgstr "Это устройство не привязано к каналу и не будет функционировать."
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_ACTIVE.NAME
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_ACTIVE.NAME"
+msgid "Channel {0}: broadcasting signal ({1} receiver(s))"
+msgstr "Канал {0}: трансляция сигнала ({1} приёмн.)"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_IDLE.NAME
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_IDLE.NAME"
+msgid "Channel {0}: no signal ({1} receiver(s))"
+msgstr "Канал {0}: нет сигнала ({1} приёмн.)"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_PRESENT.NO
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_PRESENT.NO"
+msgid "no"
+msgstr "нет"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_PRESENT.YES
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.EMITTER_PRESENT.YES"
+msgid "yes"
+msgstr "да"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.RECEIVER_ACTIVE.NAME
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.RECEIVER_ACTIVE.NAME"
+msgid "Channel {0}: receiving signal (emitter: {1})"
+msgstr "Канал {0}: получение сигнала (излучатель: {1})"
+
+#. WirelessAutomation.STRINGS.STATUSITEMS.RECEIVER_IDLE.NAME
+msgctxt "WirelessAutomation.STRINGS.STATUSITEMS.RECEIVER_IDLE.NAME"
+msgid "Channel {0}: no signal (emitter: {1})"
+msgstr "Канал {0}: нет сигнала (излучатель: {1})"
